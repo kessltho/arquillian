@@ -1,4 +1,4 @@
-activeProfiles=arq-jbossas-remote
+activeProfiles=arquillian-jbossas-remote
 eclipse.preferences.version=1
 resolveWorkspaceProjects=true
 version=1
