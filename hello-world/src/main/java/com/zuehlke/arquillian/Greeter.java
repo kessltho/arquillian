@@ -1,4 +1,4 @@
-package org.arquillian.example;
+package com.zuehlke.arquillian;
 
 import java.io.PrintStream;
 

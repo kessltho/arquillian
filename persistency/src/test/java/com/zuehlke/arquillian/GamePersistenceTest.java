@@ -1,4 +1,4 @@
-package org.arquillian.example;
+package com.zuehlke.arquillian;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +28,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.zuehlke.arquillian.Game;
 
 @RunWith(Arquillian.class)
 public class GamePersistenceTest {

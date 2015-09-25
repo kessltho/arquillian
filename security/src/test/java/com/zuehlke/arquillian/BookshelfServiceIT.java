@@ -1,22 +1,4 @@
-/*
- * Java EE security testing sample
- * hhttps://github.com/javaee-testing/security
- *
- * Copyright 2014 samaxes.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.samaxes.javaeetesting.security;
+package com.zuehlke.arquillian;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +23,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Book service test cases.
- *
- * @author Samuel Santos
- */
 @RunWith(Arquillian.class)
 public class BookshelfServiceIT {
 
@@ -64,34 +41,29 @@ public class BookshelfServiceIT {
 		// .resolve("").withTransitivity().asFile();
 
 		File[] libraries = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("org.apache.commons:commons-math3").withTransitivity()
-				.asFile();
+				.resolve("org.apache.commons:commons-math3").withTransitivity().asFile();
 
 		JavaArchive main = ShrinkWrap
 				.create(JavaArchive.class, "ejb-jar.jar")
-				.addClasses(Book.class, BookshelfService.class,
-						BookshelfManager.class, BookshelfUser.class)
-				.addAsManifestResource(EmptyAsset.INSTANCE,
-						ArchivePaths.create("beans.xml"))
-				.addAsManifestResource("test-persistence.xml",
-						"persistence.xml");
+				.addClasses(Book.class, BookshelfService.class, BookshelfManager.class,
+						BookshelfUser.class)
+				.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"))
+				.addAsManifestResource("test-persistence.xml", "persistence.xml");
 
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addClasses(BookshelfServiceIT.class);
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war").addClasses(
+				BookshelfServiceIT.class);
 
 		EnterpriseArchive ear = ShrinkWrap
 				.create(EnterpriseArchive.class, "javaee-testing-security.ear")
 
 				.addAsManifestResource("jbossas-ds.xml")
 				// .addAsLibraries(libraries)
-				.addAsModule(main).addAsModule(war)
-				.addAsLibraries(libraries)
+				.addAsModule(main).addAsModule(war).addAsLibraries(libraries)
 				.setApplicationXML("test-application.xml")
 
 				// .addAsApplicationResource(EmptyAsset.INSTANCE,
 				// ArchivePaths.create("beans.xml"))
-				.addAsManifestResource("jboss-ejb3.xml")
-				.addAsManifestResource("jbossas-ds.xml");
+				.addAsManifestResource("jboss-ejb3.xml").addAsManifestResource("jbossas-ds.xml");
 
 		// System.out.println(ear.toString(true));
 		// ear.as(ZipExporter.class).exportTo(new
@@ -105,10 +77,10 @@ public class BookshelfServiceIT {
 	@Test
 	public void testAsManager() throws Exception {
 		manager.call(new Callable<Book>() {
+
 			@Override
 			public Book call() throws Exception {
-				bookshelfService.addBook(new Book("978-1-4302-4626-8",
-						"Beginning Java EE 7"));
+				bookshelfService.addBook(new Book("978-1-4302-4626-8", "Beginning Java EE 7"));
 				bookshelfService.addBook(new Book("978-1-4493-2829-0",
 						"Continuous Enterprise Development in Java"));
 
@@ -119,8 +91,8 @@ public class BookshelfServiceIT {
 					bookshelfService.deleteBook(book);
 				}
 
-				Assert.assertEquals("BookshelfService.getBooks()", 0,
-						bookshelfService.getBooks().size());
+				Assert.assertEquals("BookshelfService.getBooks()", 0, bookshelfService.getBooks()
+						.size());
 				return null;
 			}
 		});
@@ -130,10 +102,10 @@ public class BookshelfServiceIT {
 	@Test
 	public void testAsUser() throws Exception {
 		user.call(new Callable<Book>() {
+
 			@Override
 			public Book call() throws Exception {
-				bookshelfService.addBook(new Book("978-1-4302-4626-8",
-						"Beginning Java EE 7"));
+				bookshelfService.addBook(new Book("978-1-4302-4626-8", "Beginning Java EE 7"));
 				bookshelfService.addBook(new Book("978-1-4493-2829-0",
 						"Continuous Enterprise Development in Java"));
 
@@ -150,8 +122,8 @@ public class BookshelfServiceIT {
 				}
 
 				// The list should not be empty
-				Assert.assertEquals("BookshelfService.getBooks()", 2,
-						bookshelfService.getBooks().size());
+				Assert.assertEquals("BookshelfService.getBooks()", 2, bookshelfService.getBooks()
+						.size());
 				return null;
 			}
 		});
@@ -161,8 +133,7 @@ public class BookshelfServiceIT {
 	@Test
 	public void testUnauthenticated() throws Exception {
 		try {
-			bookshelfService.addBook(new Book("978-1-4302-4626-8",
-					"Beginning Java EE 7"));
+			bookshelfService.addBook(new Book("978-1-4302-4626-8", "Beginning Java EE 7"));
 			Assert.fail("Unauthenticated users should not be able to add books");
 		} catch (EJBAccessException e) {
 			// Good, unauthenticated users cannot add things

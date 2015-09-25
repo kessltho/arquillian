@@ -1,4 +1,4 @@
-package org.arquillian.example;
+package com.zuehlke.arquillian;
 
 import javax.inject.Inject;
 
@@ -10,6 +10,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.zuehlke.arquillian.Greeter;
+import com.zuehlke.arquillian.PhraseBuilder;
 
 @RunWith(Arquillian.class)
 public class GreeterTest {
