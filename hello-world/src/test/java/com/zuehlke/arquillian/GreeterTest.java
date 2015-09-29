@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 public class GreeterTest {
 
 	@Inject
-	Greeter greeter;
+	Greeter testee;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -27,6 +27,6 @@ public class GreeterTest {
 
 	@Test
 	public void should_create_greeting() {
-		Assert.assertEquals("Hi, Earthling!", greeter.createGreeting("Earthling"));
+		Assert.assertEquals("Hi, Earthling!", testee.createGreeting("Earthling"));
 	}
 }
