@@ -12,10 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
 import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -29,23 +26,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.zuehlke.arquillian.Game;
-
 @RunWith(Arquillian.class)
 public class GamePersistenceTest {
+
 	@Deployment
 	public static Archive<?> createDeployment() {
-		return ShrinkWrap
-				.create(WebArchive.class, "test.war")
-				.addPackage(Game.class.getPackage())
-				.addAsResource("test-persistence.xml",
-						"META-INF/persistence.xml")
+		return ShrinkWrap.create(WebArchive.class, "test.war").addPackage(Game.class.getPackage())
+				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsWebInfResource("jbossas-ds.xml");
 	}
 
-	private static final String[] GAME_TITLES = { "Super Mario Brothers",
-			"Mario Kart", "F-Zero" };
+	private static final String[] GAME_TITLES = { "Super Mario Brothers", "Mario Kart", "F-Zero" };
 
 	@PersistenceContext
 	EntityManager em;
@@ -63,7 +55,6 @@ public class GamePersistenceTest {
 	private void clearData() throws Exception {
 		utx.begin();
 		em.joinTransaction();
-		System.out.println("Dumping old records...");
 		em.createQuery("delete from Game").executeUpdate();
 		utx.commit();
 	}
@@ -71,7 +62,6 @@ public class GamePersistenceTest {
 	private void insertData() throws Exception {
 		utx.begin();
 		em.joinTransaction();
-		System.out.println("Inserting records...");
 		for (String title : GAME_TITLES) {
 			Game game = new Game(title);
 			em.persist(game);
@@ -94,64 +84,54 @@ public class GamePersistenceTest {
 
 		Root<Game> game = criteria.from(Game.class);
 		criteria.select(game);
-		// TIP: If you don't want to use the JPA 2 Metamodel,
-		// you can change the get() method call to get("id")
-		criteria.orderBy(builder.asc(game.get(Game_.id)));
-		// No WHERE clause, which implies select all
+		criteria.orderBy(builder.asc(game.get("id")));
 
 		// when
-		System.out.println("Selecting (using Criteria)...");
 		List<Game> games = em.createQuery(criteria).getResultList();
 
 		// then
-		System.out
-				.println("Found " + games.size() + " games (using Criteria):");
 		assertContainsAllGames(games);
-		utx.commit();
+		// utx.commit();
 	}
 
 	@Test(expected = RollbackException.class)
-	public void enterTooShortTitle() throws SecurityException,
-			IllegalStateException, RollbackException, HeuristicMixedException,
-			HeuristicRollbackException, SystemException {
+	public void enterTooShortTitle() throws Exception {
 		Game game = new Game("sh");
 		em.persist(game);
 		utx.commit();
 	}
 
 	@Test(expected = RollbackException.class)
-	public void enterTooLongTitle() throws SecurityException,
-			IllegalStateException, RollbackException, HeuristicMixedException,
-			HeuristicRollbackException, SystemException {
-		Game game = new Game(
-				"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+	public void enterTooLongTitle() throws Exception {
+
+		String tooLongTitle = repeatString("a", 51);
+		Game game = new Game(tooLongTitle);
 		em.persist(game);
 		utx.commit();
 	}
 
-	// @Test
-	// public void shouldFindAllGamesUsingJpqlQuery() throws Exception {
-	// // given
-	// String fetchingAllGamesInJpql = "select g from Game g order by g.id";
-	//
-	// // when
-	// System.out.println("Selecting (using JPQL)...");
-	// List<Game> games = em.createQuery(fetchingAllGamesInJpql,
-	// Game.class).getResultList();
-	//
-	// // then
-	// System.out.println("Found " + games.size() + " games (using JPQL):");
-	// assertContainsAllGames(games);
-	// }
+	@Test(expected = RollbackException.class)
+	public void enterNullTitle() throws Exception {
+
+		Game game = new Game(null);
+		em.persist(game);
+		utx.commit();
+	}
 
 	private static void assertContainsAllGames(Collection<Game> retrievedGames) {
 		Assert.assertEquals(GAME_TITLES.length, retrievedGames.size());
 		final Set<String> retrievedGameTitles = new HashSet<String>();
 		for (Game game : retrievedGames) {
-			System.out.println("* " + game);
 			retrievedGameTitles.add(game.getTitle());
 		}
-		Assert.assertTrue(retrievedGameTitles.containsAll(Arrays
-				.asList(GAME_TITLES)));
+		Assert.assertTrue(retrievedGameTitles.containsAll(Arrays.asList(GAME_TITLES)));
+	}
+
+	private String repeatString(String s, int count) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			sb.append(s);
+		}
+		return sb.toString();
 	}
 }

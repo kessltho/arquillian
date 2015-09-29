@@ -15,6 +15,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,8 +38,6 @@ public class BookshelfServiceIT {
 
 	@Deployment
 	public static Archive<?> createDeployment() throws IOException {
-		// File[] libraries = Maven.resolver().loadPomFromFile("pom.xml")
-		// .resolve("").withTransitivity().asFile();
 
 		File[] libraries = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("org.apache.commons:commons-math3").withTransitivity().asFile();
@@ -54,21 +53,15 @@ public class BookshelfServiceIT {
 				BookshelfServiceIT.class);
 
 		EnterpriseArchive ear = ShrinkWrap
-				.create(EnterpriseArchive.class, "javaee-testing-security.ear")
+				.create(EnterpriseArchive.class, "arquillian-testing-security.ear")
 
-				.addAsManifestResource("jbossas-ds.xml")
-				// .addAsLibraries(libraries)
-				.addAsModule(main).addAsModule(war).addAsLibraries(libraries)
-				.setApplicationXML("test-application.xml")
+				.addAsManifestResource("jbossas-ds.xml").addAsModule(main).addAsModule(war)
+				.addAsLibraries(libraries).setApplicationXML("test-application.xml")
 
-				// .addAsApplicationResource(EmptyAsset.INSTANCE,
-				// ArchivePaths.create("beans.xml"))
 				.addAsManifestResource("jboss-ejb3.xml").addAsManifestResource("jbossas-ds.xml");
 
-		// System.out.println(ear.toString(true));
-		// ear.as(ZipExporter.class).exportTo(new
-		// File("C:/temp/deployment.ear"),
-		// true);
+		System.out.println(ear.toString(true));
+		ear.as(ZipExporter.class).exportTo(new File("C:/temp/deployment.ear"), true);
 
 		return ear;
 	}
