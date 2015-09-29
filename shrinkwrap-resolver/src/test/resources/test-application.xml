@@ -1,0 +1,6 @@
+<application>
+    <display-name>ear</display-name>
+    <module>
+        <ejb>shrinkwrap-resolver-test.jar</ejb>
+    </module>
+</application>
