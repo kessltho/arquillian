@@ -13,17 +13,17 @@ import javax.persistence.PersistenceContext;
 public class MyBean {
 
 	@Inject
-	private MyPrinter p;
+	EchoService echoService;
 
-	@PersistenceContext()
-	private EntityManager em;
+	@PersistenceContext
+	EntityManager em;
 
-	private PersonEntity person;
+	PersonEntity person;
 
 	@RolesAllowed("Admin")
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void soSomethingCoolAndFancy() {
-		p.print("Person.name=" + person.getName());
+	public String echoPerson() {
+		return echoService.echo(person.getName());
 	}
 
 	@PostConstruct
