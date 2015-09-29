@@ -1,20 +1,19 @@
 package com.zuehlke.arquillian;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 public class PhraseBuilder {
-    private Map<String, String> templates;
 
-    public String buildPhrase(String id, Object... args) {
-        return MessageFormat.format(templates.get(id), args);
-    }
+	private String greetingPattern;
 
-    @PostConstruct
-    public void initialize() {
-        templates = new HashMap<String, String>();
-        templates.put("hello", "Hi, {0}!");
-    }
+	public String buildPhrase(String name) {
+		return MessageFormat.format(greetingPattern, name);
+	}
+
+	@PostConstruct
+	public void initialize() {
+		greetingPattern = "Hi, {0}!";
+	}
 }

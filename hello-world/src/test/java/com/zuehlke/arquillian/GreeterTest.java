@@ -11,9 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.zuehlke.arquillian.Greeter;
-import com.zuehlke.arquillian.PhraseBuilder;
-
 @RunWith(Arquillian.class)
 public class GreeterTest {
 
@@ -30,8 +27,6 @@ public class GreeterTest {
 
 	@Test
 	public void should_create_greeting() {
-		Assert.assertEquals("Hi, Earthling!",
-				greeter.createGreeting("Earthling"));
-		greeter.greet(System.out, "Earthling");
+		Assert.assertEquals("Hi, Earthling!", greeter.createGreeting("Earthling"));
 	}
 }
