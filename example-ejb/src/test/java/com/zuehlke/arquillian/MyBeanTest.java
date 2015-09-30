@@ -16,13 +16,14 @@ public class MyBeanTest {
 	public void testLookup() throws Exception {
 		String host = "localhost";
 		String port = "12377";
-		String username = "admin";
-		String password = "topsecret";
+		String username = "MickeyMouse";
+		String password = "top#secret!";
 
 		Properties properties = new Properties();
 		properties.put(Context.PROVIDER_URL, host + ":" + port);
 		properties.put(Context.SECURITY_PRINCIPAL, username);
 		properties.put(Context.SECURITY_CREDENTIALS, password);
+		// many more properties
 
 		InitialContext context = new InitialContext(properties);
 		MyBean myBean = (MyBean) context.lookup("MyBean");
