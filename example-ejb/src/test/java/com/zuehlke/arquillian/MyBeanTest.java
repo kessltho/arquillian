@@ -17,7 +17,7 @@ public class MyBeanTest {
 		String host = "localhost";
 		String port = "12377";
 		String username = "MickeyMouse";
-		String password = "top#secret!";
+		String password = "Mickey&Minnie4ever";
 
 		Properties properties = new Properties();
 		properties.put(Context.PROVIDER_URL, host + ":" + port);
