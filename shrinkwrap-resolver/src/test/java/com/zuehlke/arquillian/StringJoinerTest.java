@@ -28,8 +28,8 @@ public class StringJoinerTest {
 	public static Archive<?> createDeployment() throws IOException {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "shrinkwrap-resolver-test.war")
 				.addClass(StringJoiner.class)
-				.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"))
-				.addAsLibraries(resolveApacheCommonsLang3());
+				// .addAsLibraries(resolveApacheCommonsLang3())
+				.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
 
 		System.out.println(war.toString(true));
 		war.as(ZipExporter.class).exportTo(new File("target/shrinkwrap-resolver-test.war"), true);
