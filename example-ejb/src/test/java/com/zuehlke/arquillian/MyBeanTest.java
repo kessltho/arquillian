@@ -13,7 +13,7 @@ import org.junit.Test;
 public class MyBeanTest {
 
 	@Test
-	public void testLookup() throws Exception {
+	public void testEchoPerson() throws Exception {
 		String host = "localhost";
 		String port = "12377";
 		String username = "MickeyMouse";
